@@ -2,6 +2,8 @@ package simplegraphlibrary;
 
 import java.util.Iterator;
 
+import simplegraphlibrary.Digraph.Edge;
+
 /**
  * Created by permin on 09/11/2016.
  */
@@ -15,35 +17,35 @@ class GraphImplementationUtils {
 
     ContinuousVerticesRangeIterator(int verticesNumber) {
       this.verticesNumber = verticesNumber;
-      vertex = 0;
+      this.vertex = 0;
     }
 
     @Override
     public boolean hasNext() {
-      return vertex < verticesNumber;
+      return this.vertex < this.verticesNumber;
     }
 
     @Override
     public Integer next() {
-      return vertex++;
+      return this.vertex++;
     }
   }
 
   static class EdgesTargetIterator implements Iterator<Integer> {
-    private final Iterator<Digraph.Edge> edgeIterator;
+    private final Iterator<Edge> edgeIterator;
 
-    public EdgesTargetIterator(Iterator<Digraph.Edge> edgeIterator) {
+    public EdgesTargetIterator(Iterator<Edge> edgeIterator) {
       this.edgeIterator = edgeIterator;
     }
 
     @Override
     public boolean hasNext() {
-      return edgeIterator.hasNext();
+      return this.edgeIterator.hasNext();
     }
 
     @Override
     public Integer next() {
-      return edgeIterator.next().getTarget();
+      return this.edgeIterator.next().getTarget();
     }
   }
 }

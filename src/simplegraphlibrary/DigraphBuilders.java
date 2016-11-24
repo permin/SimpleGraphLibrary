@@ -1,5 +1,8 @@
 package simplegraphlibrary;
 
+import simplegraphlibrary.AdjacencyListsDigraph.Builder;
+import simplegraphlibrary.AdjacencyListsDigraph.SymmetricBuilder;
+
 /**
  * Created by permin on 09/11/2016.
  */
@@ -8,11 +11,11 @@ public class DigraphBuilders {
   }
 
   public static DigraphBuilder adjacencyListsDigraphBuilder() {
-    return new AdjacencyListsDigraph.Builder();
+    return new Builder();
   }
 
   public static DigraphBuilder adjacencyListsSymmetricDigraphBuilder() {
-    return new AdjacencyListsDigraph.SymmetricBuilder();
+    return new SymmetricBuilder();
   }
 }
 

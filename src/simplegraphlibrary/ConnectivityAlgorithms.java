@@ -1,12 +1,8 @@
 package simplegraphlibrary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import simplegraphlibrary.DigraphTraversals.AbstractVisitor;
-import simplegraphlibrary.DigraphTraversals.GenerateDiscoverOrderVisitor;
-import simplegraphlibrary.DigraphTraversals.Visitor;
-import simplegraphlibrary.VerticesPartition.Builder;
 
 /**
  * Created by permin on 16/11/2016.
@@ -16,47 +12,46 @@ public class ConnectivityAlgorithms {
   }
 
 
-  static public Partition<Integer> findStronglyConnectedComponents(Digraph digraph) {
-    List<Integer> discoverOrder = new ArrayList<>();
-    Visitor discoverOrderGenerator = new GenerateDiscoverOrderVisitor(discoverOrder);
-    DigraphTraversals.traverseInDepthFirstSearchOrder(digraph, discoverOrderGenerator);
+  public static Partition<Integer> findStronglyConnectedComponents(Digraph digraph) {
+    List<Integer> exitOrder = new ArrayList<>();
+    DigraphTraversals.Visitor exitOrderGenerator = new DigraphTraversals.ExitOrderGenerator(exitOrder);
+    DigraphTraversals.traverseInDepthFirstSearchOrder(digraph, exitOrderGenerator);
 
     Digraph transposedDigraph = GraphUtils.transposeDigraph(digraph);
-    Builder connectedComponentsBuilder = new Builder();
-    Visitor stronglyConnectedComponentsGenerator =
-        new ConnectivityAlgorithms.StronglyConnectedComponentsGenerator(connectedComponentsBuilder);
-    //Collections.reverse(discoverOrder);
-    System.err.println(discoverOrder);
-    DigraphTraversals.traverseInDepthFirstSearchOrder(discoverOrder,
+    VerticesPartition.Builder connectedComponentsBuilder = new VerticesPartition.Builder();
+    DigraphTraversals.Visitor stronglyConnectedComponentsGenerator =
+        new StronglyConnectedComponentsGenerator(connectedComponentsBuilder);
+    Collections.reverse(exitOrder);
+    DigraphTraversals.traverseInDepthFirstSearchOrder(exitOrder,
         transposedDigraph,
         stronglyConnectedComponentsGenerator);
     return connectedComponentsBuilder.build();
   }
 
-  private static class StronglyConnectedComponentsGenerator extends AbstractVisitor {
+  private static class StronglyConnectedComponentsGenerator extends DigraphTraversals.AbstractVisitor {
 
-    private final Builder verticesPartitionBuilder;
-    private Integer firstVertexInCompoment;
+    private final VerticesPartition.Builder verticesPartitionBuilder;
+    private Integer firstVertexInComponent;
     private Integer componentIndex;
 
-    private StronglyConnectedComponentsGenerator(Builder
+    private StronglyConnectedComponentsGenerator(VerticesPartition.Builder
                                                      verticesPartition) {
-      verticesPartitionBuilder = verticesPartition;
+      this.verticesPartitionBuilder = verticesPartition;
     }
 
     @Override
     public void discoverVertex(int vertex) {
-      if (this.firstVertexInCompoment == null) {
-        this.firstVertexInCompoment = vertex;
-        this.componentIndex = this.verticesPartitionBuilder.createNewGroup();
+      if (firstVertexInComponent == null) {
+        firstVertexInComponent = vertex;
+        componentIndex = verticesPartitionBuilder.createNewGroup();
       }
-      this.verticesPartitionBuilder.addToGroup(this.componentIndex, vertex);
+      verticesPartitionBuilder.addToGroup(componentIndex, vertex);
     }
 
     @Override
     public void finishVertex(int vertex) {
-      if (vertex == this.firstVertexInCompoment) {
-        this.firstVertexInCompoment = null;
+      if (vertex == firstVertexInComponent) {
+        firstVertexInComponent = null;
       }
     }
   }

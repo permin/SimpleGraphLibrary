@@ -6,15 +6,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import simplegraphlibrary.GraphImplementationUtils.ContinuousVerticesRangeIterator;
+
 /**
  * Created by permin on 09/11/2016.
  */
-public class AdjacencyListsDigraph extends AbstractDigraph implements Digraph {
+public class AdjacencyListsDigraph extends AbstractDigraph {
   private final int verticesNumber;
 
-  private final List<List<Edge>> outgoingEdges;
+  private final List<List<Digraph.Edge>> outgoingEdges;
 
-  private AdjacencyListsDigraph(int verticesNumber, List<List<Edge>> outgoingEdges) {
+  private AdjacencyListsDigraph(int verticesNumber, List<List<Digraph.Edge>> outgoingEdges) {
     this.verticesNumber = verticesNumber;
     this.outgoingEdges = outgoingEdges;
   }
@@ -24,68 +26,68 @@ public class AdjacencyListsDigraph extends AbstractDigraph implements Digraph {
     return new AbstractSet<Integer>() {
       @Override
       public Iterator<Integer> iterator() {
-        return new GraphImplementationUtils.ContinuousVerticesRangeIterator(verticesNumber);
+        return new ContinuousVerticesRangeIterator(AdjacencyListsDigraph.this.verticesNumber);
       }
 
       @Override
       public int size() {
-        return verticesNumber;
+        return AdjacencyListsDigraph.this.verticesNumber;
       }
     };
   }
 
   @Override
-  public List<Edge> outgoingEdges(int vertex) {
-    return outgoingEdges.get(vertex);
+  public List<Digraph.Edge> outgoingEdges(int vertex) {
+    return this.outgoingEdges.get(vertex);
   }
 
   static class Builder implements DigraphBuilder {
     private int verticesNumber;
-    private List<List<Edge>> outgoingEdges;
+    private List<List<Digraph.Edge>> outgoingEdges;
 
     @Override
     public DigraphBuilder setVerticesNumber(int verticesNumber) {
       this.verticesNumber = verticesNumber;
-      outgoingEdges = new ArrayList<List<Edge>>();
+      this.outgoingEdges = new ArrayList<List<Digraph.Edge>>();
       for (int i = 0; i < verticesNumber; ++i) {
-        outgoingEdges.add(new ArrayList<Edge>());
+        this.outgoingEdges.add(new ArrayList<Digraph.Edge>());
       }
       return this;
     }
 
     @Override
     public DigraphBuilder addEdge(int source, int target) {
-      outgoingEdges.get(source).add(new Edge(source, target));
+      this.outgoingEdges.get(source).add(new Digraph.Edge(source, target));
       return this;
     }
 
     @Override
     public Digraph build() {
-      return new AdjacencyListsDigraph(verticesNumber, outgoingEdges);
+      return new AdjacencyListsDigraph(this.verticesNumber, this.outgoingEdges);
     }
   }
 
   static class SymmetricBuilder implements DigraphBuilder {
-    final private Builder builder = new Builder();
+    private final AdjacencyListsDigraph.Builder builder = new AdjacencyListsDigraph.Builder();
 
     @Override
     public DigraphBuilder setVerticesNumber(int verticesNumber) {
-      builder.setVerticesNumber(verticesNumber);
+      this.builder.setVerticesNumber(verticesNumber);
       return this;
     }
 
     @Override
     public DigraphBuilder addEdge(int source, int target) {
-      builder.addEdge(source, target);
+      this.builder.addEdge(source, target);
       if (source != target) {
-        builder.addEdge(target, source);
+        this.builder.addEdge(target, source);
       }
       return this;
     }
 
     @Override
     public Digraph build() {
-      return builder.build();
+      return this.builder.build();
     }
   }
 }

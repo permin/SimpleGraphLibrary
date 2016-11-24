@@ -9,7 +9,7 @@ public abstract class AbstractPartition<E> implements Partition<E> {
       if (groupIndex > 0) {
         builder.append("; ");
       }
-      builder.append(this.group(groupIndex));
+      builder.append(group(groupIndex));
     }
     builder.append("}");
     return builder.toString();

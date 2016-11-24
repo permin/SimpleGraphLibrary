@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import simplegraphlibrary.Digraph.Edge;
-import simplegraphlibrary.DigraphTraversals.GenerateDiscoverOrderVisitor;
+import simplegraphlibrary.DigraphTraversals.ExitOrderGenerator;
 import simplegraphlibrary.DigraphTraversals.Visitor;
 
 import static org.hamcrest.CoreMatchers.either;
@@ -39,7 +39,11 @@ public class DigraphTraversalsTest {
   public void setUp() throws Exception {
     DigraphBuilder builder = DigraphBuilders.adjacencyListsDigraphBuilder();
     builder.setVerticesNumber(10);
-    builder.addEdge(A, B).addEdge(A, C).addEdge(C, D).addEdge(D, A).addEdge(B, D);
+    builder.addEdge(A, B);
+    builder.addEdge(A, C);
+    builder.addEdge(C, D);
+    builder.addEdge(D, A);
+    builder.addEdge(B, D);
     builder.addEdge(E, F);
     this.digraph = builder.build();
   }
@@ -48,7 +52,7 @@ public class DigraphTraversalsTest {
   public void traverseInDepthFirstSearchOrder() throws Exception {
     List<Integer> discoveredVertices = new ArrayList<>();
     DigraphTraversals.traverseInDepthFirstSearchOrder(this.digraph, new
-        GenerateDiscoverOrderVisitor(discoveredVertices));
+        ExitOrderGenerator(discoveredVertices));
     assertThat("All vertices are discovered", discoveredVertices.containsAll(this.digraph.allVertices
         ()));
     assertThat(discoveredVertices.size(), equalTo(this.digraph.verticesNumber()));
@@ -86,7 +90,7 @@ public class DigraphTraversalsTest {
   public void traverseInDepthFirstSearchOrder2() throws Exception {
     List<Integer> discoveredVertices = new ArrayList<>();
     DigraphTraversals.traverseInDepthFirstSearchOrder(A, this.digraph,
-        new GenerateDiscoverOrderVisitor(discoveredVertices));
+        new DigraphTraversals.DiscoverOrderGenerator(discoveredVertices));
     assertThat(discoveredVertices.size(), equalTo(4));
     assertThat(discoveredVertices, hasItems(A, B, C, D));
     assertThat(discoveredVertices.get(0), equalTo(A));
@@ -101,8 +105,7 @@ public class DigraphTraversalsTest {
     DigraphTraversals.traverseInBreadthFirstSearchOrder(Arrays.asList(A, E, F, ISOLATED_VERTEX),
         digraph, distances,
         new
-            DigraphTraversals
-                .AbstractVisitor());
+            DigraphTraversals.AbstractVisitor());
     assertThat(distances.size(), equalTo(7));
     assertTrue(distances.containsKey(A) &&
         distances.containsKey(B) &&
@@ -126,8 +129,7 @@ public class DigraphTraversalsTest {
     DigraphTraversals.traverseInBreadthFirstSearchOrder(A,
         digraph, distances,
         new
-            DigraphTraversals
-                .AbstractVisitor());
+            DigraphTraversals.AbstractVisitor());
     assertThat(distances.size(), equalTo(4));
     assertTrue(distances.containsKey(A) &&
         distances.containsKey(B) &&

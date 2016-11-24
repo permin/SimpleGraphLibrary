@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import simplegraphlibrary.Digraph.Edge;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
@@ -80,17 +82,15 @@ public class AdjacencyListsDigraphTest {
         allEdges.add(edge);
       }
       assertThat("number of unique edges", allEdges.size(), equalTo(4));
-      {
-        int numberOfEdges = 0;
-        for (Digraph.Edge edge : digraph.allEdges()) {
-          ++numberOfEdges;
-        }
-        assertThat(numberOfEdges, equalTo(6));
+      int numberOfEdges = 0;
+      for (Edge edge : digraph.allEdges()) {
+        ++numberOfEdges;
       }
-      assertThat(digraph.allEdges(), hasItems(new Digraph.Edge(2, 3)));
-      assertThat(digraph.allEdges(), hasItems(new Digraph.Edge(3, 2)));
-      assertThat(digraph.allEdges(), hasItems(new Digraph.Edge(0, 2)));
-      assertThat(digraph.allEdges(), hasItems(new Digraph.Edge(2, 0)));
+      assertThat(numberOfEdges, equalTo(6));
+      assertThat(digraph.allEdges(), hasItems(new Edge(2, 3)));
+      assertThat(digraph.allEdges(), hasItems(new Edge(3, 2)));
+      assertThat(digraph.allEdges(), hasItems(new Edge(0, 2)));
+      assertThat(digraph.allEdges(), hasItems(new Edge(2, 0)));
     }
   }
 }
