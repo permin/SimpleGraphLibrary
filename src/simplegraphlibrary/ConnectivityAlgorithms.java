@@ -28,6 +28,19 @@ public class ConnectivityAlgorithms {
     return connectedComponentsBuilder.build();
   }
 
+  public static Digraph contractDigraph(Digraph digraph, Partition<Integer> verticesPartition) {
+    DigraphBuilder builder = DigraphBuilders.simpleDigraphBuilder();
+    builder.setVerticesNumber(verticesPartition.groupsNumber());
+    for (Digraph.Edge edge : digraph.allEdges()) {
+      int sourceGroup = verticesPartition.groupIndex(edge.getSource());
+      int targetGroup = verticesPartition.groupIndex(edge.getTarget());
+      if (sourceGroup != targetGroup) {
+        builder.addEdge(sourceGroup, targetGroup);
+      }
+    }
+    return builder.build();
+  }
+
   private static class StronglyConnectedComponentsGenerator extends DigraphTraversals.AbstractVisitor {
 
     private final VerticesPartition.Builder verticesPartitionBuilder;

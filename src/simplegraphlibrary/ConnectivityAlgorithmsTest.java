@@ -2,7 +2,9 @@ package simplegraphlibrary;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import simplegraphlibrary.DigraphTraversals.AbstractVisitor;
@@ -10,6 +12,8 @@ import simplegraphlibrary.TestUtils.RandomSimpleDigraphGenerator;
 import simplegraphlibrary.TestUtils.RandomSimpleDigraphGenerator.SelfLoops;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by permin on 16/11/2016.
@@ -46,4 +50,38 @@ public class ConnectivityAlgorithmsTest {
     }
   }
 
+  @Test
+  public void contractGraphTest() {
+    VerticesPartition verticesPartition = null;
+    Digraph digraph = null;
+    {
+      DigraphBuilder builder = DigraphBuilders.adjacencyListsDigraphBuilder();
+      builder.setVerticesNumber(5);
+      builder.addEdge(0, 2);
+      builder.addEdge(0, 3);
+      builder.addEdge(1, 0);
+      digraph = builder.build();
+    }
+    {
+      VerticesPartition.Builder partitionBuilder = new VerticesPartition.Builder();
+      int firstGroup = partitionBuilder.createNewGroup();
+      int secondGroup = partitionBuilder.createNewGroup();
+      int thirdGroup = partitionBuilder.createNewGroup();
+      partitionBuilder.addToGroup(firstGroup, 0);
+      partitionBuilder.addToGroup(firstGroup, 2);
+      partitionBuilder.addToGroup(firstGroup, 3);
+      partitionBuilder.addToGroup(secondGroup, 1);
+      partitionBuilder.addToGroup(thirdGroup, 4);
+      verticesPartition = partitionBuilder.build();
+    }
+    Digraph contractedDigraph = ConnectivityAlgorithms.contractDigraph(digraph, verticesPartition);
+    assertEquals(contractedDigraph.verticesNumber(), 3);
+    assertThat(contractedDigraph.allEdges(), hasItems(new Digraph.Edge(1, 0)));
+
+    List<Digraph.Edge> edges = new ArrayList<Digraph.Edge>();
+    for (Digraph.Edge edge : contractedDigraph.allEdges()) {
+      edges.add(edge);
+    }
+    assertEquals(edges.size(), 1);
+  }
 }

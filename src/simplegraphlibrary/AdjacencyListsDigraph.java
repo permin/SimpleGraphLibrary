@@ -2,6 +2,7 @@ package simplegraphlibrary;
 
 import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -82,6 +83,33 @@ public class AdjacencyListsDigraph extends AbstractDigraph {
       if (source != target) {
         this.builder.addEdge(target, source);
       }
+      return this;
+    }
+
+    @Override
+    public Digraph build() {
+      return this.builder.build();
+    }
+  }
+
+  static class SimpleDigraphBuilder implements DigraphBuilder {
+    private final AdjacencyListsDigraph.Builder builder = new AdjacencyListsDigraph.Builder();
+    private final HashSet<Edge> addedEdges = new HashSet<>();
+
+    @Override
+    public DigraphBuilder setVerticesNumber(int verticesNumber) {
+      this.builder.setVerticesNumber(verticesNumber);
+      return this;
+    }
+
+    @Override
+    public DigraphBuilder addEdge(int source, int target) {
+      Edge edge = new Edge(source, target);
+      if (addedEdges.contains(edge)) {
+        return this;
+      }
+      this.builder.addEdge(source, target);
+      addedEdges.add(edge);
       return this;
     }
 

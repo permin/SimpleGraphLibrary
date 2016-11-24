@@ -1,6 +1,7 @@
 package simplegraphlibrary;
 
 import simplegraphlibrary.AdjacencyListsDigraph.Builder;
+import simplegraphlibrary.AdjacencyListsDigraph.SimpleDigraphBuilder;
 import simplegraphlibrary.AdjacencyListsDigraph.SymmetricBuilder;
 
 /**
@@ -16,6 +17,10 @@ public class DigraphBuilders {
 
   public static DigraphBuilder adjacencyListsSymmetricDigraphBuilder() {
     return new SymmetricBuilder();
+  }
+
+  public static DigraphBuilder simpleDigraphBuilder() {
+    return new SimpleDigraphBuilder();
   }
 }
 
